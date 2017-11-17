@@ -2,3 +2,6 @@ keras
 tensorflow
 jupyter
 -e git+https://github.com/rachmadaniHaryono/google-images-download.git#egg=google-images-download
+pillow
+h5py
+numpy
