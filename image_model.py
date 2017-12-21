@@ -39,11 +39,12 @@ model.load_weights('first_try.h5')
 
 
 def classifier(filename):
+    return classifier_img(image.img_to_array(image.load_img(filename, target_size=(150, 150))))
 
-    img = image.load_img(filename, target_size=(150, 150))
-    x = image.img_to_array(img)
+
+def classifier_img(x):
     x = np.expand_dims(x, axis=0)
     images = np.vstack([x])
-    classes = model.predict_classes(images, batch_size=10)
-
+    classes = model.predict_classes(images, batch_size=10, verbose=0)
+    
     return classes_types[np.asscalar(classes[0][0])]
