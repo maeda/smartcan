@@ -4,10 +4,12 @@ import cv2
 from time import sleep
 import RPi.GPIO as GPIO 
 
+INPUT_PIN = 4
+
 counter = 0
 GPIO.setmode(GPIO.BCM)
-INPUT_PIN = 4
 GPIO.setup(INPUT_PIN, GPIO.IN)
+
 
 def capture(file_path):
 	cap = cv2.VideoCapture(0)
@@ -20,9 +22,11 @@ def capture(file_path):
 	cap.release()
 	cv2.destroyAllWindows()
 
+
 while True: 
     if (GPIO.input(INPUT_PIN) == True):
         capture('photo_' + str(counter) + '.jpg')
-	counter += 1
+        counter += 1
+        sleep(.3)
 
-    sleep(1);
+    sleep(.01);
