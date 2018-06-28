@@ -1,6 +1,6 @@
 from flask import Flask
 from flask import request
-from image_model import classifier
+from model.image_model import classifier
 app = Flask(__name__)
 
 
