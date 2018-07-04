@@ -1,10 +1,6 @@
 keras
 tensorflow
 jupyter
-pillow
 h5py
 numpy
 flask
-opencv-python
-appscript
-Pillow
