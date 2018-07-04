@@ -35,7 +35,7 @@ model.compile(
     optimizer='rmsprop',
     metrics=['accuracy'])
 
-model.load_weights('first_try.h5')
+model.load_weights('model/first_try.h5')
 
 
 def classifier(filename):
