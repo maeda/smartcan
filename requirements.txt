@@ -5,7 +5,6 @@ pillow
 h5py
 numpy
 flask
-opencv
+opencv-python
 appscript
 Pillow
-
