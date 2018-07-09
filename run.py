@@ -4,13 +4,12 @@ import atexit
 from picamera import PiCamera
 import RPi.GPIO as GPIO
 from time import sleep
-from model.image_model import TrashModel
 import os
 import time
 
 
 class TrashApp(object):
-    def __init__(self, dataset_path, model_weights_file, model=TrashModel(), pinout={
+    def __init__(self, dataset_path, model_weights_file, model, pinout={
         'BTN_INPUT_PIN': 18,
         'LED_CTRL_OUTPUT_PIN': 25,
         'LED_RECYCLABLE_OUTPUT_PIN': 15,
@@ -50,6 +49,9 @@ class TrashApp(object):
         GPIO.output(self.pinout['LED_RECYCLABLE_OUTPUT_PIN'], GPIO.LOW)
         GPIO.output(self.pinout['LED_NON_RECYCLABLE_OUTPUT_PIN'], GPIO.LOW)
 
+    def __del__(self):
+        self._cleanup_gpio()
+
     def run(self):
 
         if GPIO.input(self.pinout['BTN_INPUT_PIN']) == False:
@@ -74,7 +76,9 @@ class TrashApp(object):
 
 
 if __name__ == '__main__':
-    trash_app = TrashApp('/home/pi/trashclassifier/data-collection', '/home/pi/trashclassifier/model/first_try.h5')
+    from model.image_model import TrashModel
+
+    trash_app = TrashApp('/home/pi/trashclassifier/data-collection', '/home/pi/trashclassifier/model/first_try.h5', TrashModel())
     while (True):
         trash_app.run()
         sleep(.1)
