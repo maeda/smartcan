@@ -9,7 +9,7 @@ import os
 import time
 
 
-class TrashApp:
+class TrashApp(object):
     def __init__(self, dataset_path, model_weights_file, model=TrashModel(), pinout={
         'BTN_INPUT_PIN': 18,
         'LED_CTRL_OUTPUT_PIN': 25,

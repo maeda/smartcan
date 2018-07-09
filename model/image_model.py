@@ -9,7 +9,7 @@ import numpy as np
 K.set_image_dim_ordering('th')
 
 
-class TrashModel:
+class TrashModel(object):
     def __init__(self):
         self.classes_types = {0: 'nonrecyclable', 1: 'recyclable'}
         self._compile()
