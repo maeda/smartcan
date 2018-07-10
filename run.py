@@ -76,9 +76,10 @@ class TrashApp(object):
 
 
 if __name__ == '__main__':
-    from model.image_model import TrashModel
+    from model.image_model import TrashModel, TrashVggModel
 
-    trash_app = TrashApp('/home/pi/trashclassifier/data-collection', '/home/pi/trashclassifier/model/first_try.h5', TrashModel())
+    trash_app = TrashApp('/home/pi/trashclassifier/data-collection', '/home/pi/trashclassifier/model/pretrained_vgg.h5',
+                         TrashVggModel())
     while (True):
         trash_app.run()
         sleep(.1)
