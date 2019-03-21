@@ -1,5 +1,8 @@
 #!/home/pi/smartcan/venv/bin/python
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from time import sleep
 
 import atexit
@@ -16,8 +19,6 @@ import RPi.GPIO as GPIO
 
 from model.image_model import TrashModel
 
-from dotenv import load_dotenv
-load_dotenv()
 
 class AppConfig:
     def __init__(self, pinout={
