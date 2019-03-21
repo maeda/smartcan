@@ -32,6 +32,7 @@ class AbstractTrashModel(ABC):
     def classifier_img(self, x):
         x = np.expand_dims(x, axis=0)
         images = np.vstack([x])
+        self.model._make_predict_function()
         classes = self.model.predict_classes(images, batch_size=10, verbose=0)
 
         return self.classes_types[np.asscalar(classes[0][0])]
@@ -80,3 +81,26 @@ class TrashModel(AbstractTrashModel):
         self.model.add(Dropout(0.5))
         self.model.add(Dense(1))
         self.model.add(Activation('sigmoid'))
+
+
+class SimpleModel(AbstractTrashModel):
+    def _compile(self):
+        self.input_shape = (3, 432, 288)
+        self.model = models.Sequential()
+        self.model.add(layers.Conv2D(32, (3, 3), activation='relu',
+                                     input_shape=self.input_shape))
+        self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+        self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+        self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(layers.Conv2D(128, (3, 3), activation='relu'))
+        self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(layers.Flatten())
+        self.model.add(layers.Dropout(0.5))
+        self.model.add(layers.Dense(256, activation='relu'))
+        self.model.add(layers.Dense(1, activation='sigmoid'))
+
+#         self.model.compile(loss='binary_crossentropy',
+#                       optimizer=optimizers.RMSprop(lr=1e-4),
+#                       metrics=['acc'])

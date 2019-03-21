@@ -7,6 +7,8 @@ from time import sleep
 import os
 import time
 
+import proximity_sensor
+
 
 class TrashApp(object):
     def __init__(self, dataset_path, model_weights_file, model, pinout={
@@ -54,7 +56,7 @@ class TrashApp(object):
 
     def run(self):
 
-        if GPIO.input(self.pinout['BTN_INPUT_PIN']) == False:
+        if proximity_sensor.is_there_object_near():
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.HIGH)
             filename = 'photo_' + str(int(time.time())) + '.jpg'
             self.camera.capture(filename)
@@ -76,10 +78,10 @@ class TrashApp(object):
 
 
 if __name__ == '__main__':
-    from model.image_model import TrashModel, TrashVggModel
+    from model.image_model import TrashModel, TrashVggModel, SimpleModel
 
-    trash_app = TrashApp('/home/pi/trashclassifier/data-collection', '/home/pi/trashclassifier/model/pretrained_vgg.h5',
-                         TrashVggModel())
+    trash_app = TrashApp('/home/pi/trashclassifier/data-collection', '/home/pi/trashclassifier/model/first_try.h5',
+                         TrashModel())
     while (True):
         trash_app.run()
         sleep(.1)

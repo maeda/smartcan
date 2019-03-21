@@ -99,3 +99,5 @@ ENV/
 .idea
 .floydexpt
 .floydignore
+data-collection/
+model/pretrained_vgg.h5
