@@ -8,3 +8,4 @@ gunicorn
 wheel
 boto3
 requests
+python-dotenv

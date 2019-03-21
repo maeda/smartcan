@@ -16,6 +16,8 @@ import RPi.GPIO as GPIO
 
 from model.image_model import TrashModel
 
+from dotenv import load_dotenv
+load_dotenv()
 
 class AppConfig:
     def __init__(self, pinout={
@@ -106,7 +108,6 @@ class OnlineApp:
 
     def store_file(self, origin, dest):
         datastore.move_object(origin, dest)
-
 
 
 def run(app, online_app, offline_app):
