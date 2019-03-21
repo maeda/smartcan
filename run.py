@@ -109,10 +109,7 @@ class OnlineApp:
 
 
 
-def run(app):
-
-    online_app = OnlineApp()
-    offline_app = OfflineApp()
+def run(app, online_app, offline_app):
 
     try:
         app.run(online_app)
@@ -124,7 +121,9 @@ def run(app):
 if __name__ == '__main__':
 
     app = AppConfig()
+    online_app = OnlineApp()
+    offline_app = OfflineApp()
 
     while True:
-        run(app)
+        run(app, online_app, offline_app)
         sleep(.1)
