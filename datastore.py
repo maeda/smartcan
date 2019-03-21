@@ -16,3 +16,11 @@ def put_object(origin, destination):
         response = client.put_object(Bucket=BUCKET_NAME, Key=destination, Body=f)
 
     return response
+
+
+def move_object(origin, destination):
+    response = put_object(origin, destination)
+
+    os.remove(origin)
+
+    return response

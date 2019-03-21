@@ -34,12 +34,9 @@ def index():
             print(class_output)
 
             if class_output == 'recyclable':
-                datastore.put_object(filename, 'data-collection/recyclable/' + filename)
+                datastore.move_object(filename, 'data-collection/recyclable/' + filename)
             if class_output == 'nonrecyclable':
-                datastore.put_object(filename, 'data-collection/nonrecyclable/' + filename)
-
-            if os.path.exists(filename):
-                os.remove(filename)
+                datastore.move_object(filename, 'data-collection/nonrecyclable/' + filename)
 
             return class_output
     return ""
