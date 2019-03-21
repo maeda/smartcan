@@ -69,7 +69,11 @@ class AppConfig:
         if proximity_sensor.is_there_object_near():
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.HIGH)
             filename = 'photo_' + str(int(time())) + '.jpg'
-            self.camera.capture(filename)
+
+            with self.camera as camera:
+                camera.resolution = (1024, 768)
+                camera.capture(filename)
+
             class_output = self.predict(filename)
             print(class_output)
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.LOW)
@@ -94,6 +98,8 @@ class AppConfig:
                 response = requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'pic.jpg': f})
                 print(response.text)
                 response.raise_for_status()
+
+                return response.text
 
         except Exception as e:
             print(e)
