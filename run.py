@@ -1,17 +1,14 @@
 #!/home/pi/smartcan/venv/bin/python
 
 from dotenv import load_dotenv
-load_dotenv()
 
-from time import sleep
+load_dotenv()
 
 import atexit
 import os
 import requests
 
 from time import sleep, time
-
-import datastore as datastore
 
 import proximity_sensor
 
@@ -104,12 +101,17 @@ class AppConfig:
             return self.model.classifier(filename)
 
     def store_file(self, origin, dest):
-        try:
-            datastore.move_object(origin, dest)
-
-        except Exception as e:
-            print(e)
+        if not self.internet_on():
             os.rename(origin, dest)
+
+    def internet_on(self):
+        try:
+            response = requests.head('https://google.com')
+            response.raise_for_status()
+            return True
+        except Exception as err:
+            print(err)
+            return False
 
 
 if __name__ == '__main__':
