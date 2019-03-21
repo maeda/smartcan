@@ -46,6 +46,9 @@ class AppConfig:
         atexit.register(self._cleanup_gpio)
         self._init_pins()
 
+        self.model = TrashModel()
+        self.model.load_weights('/home/pi/trashclassifier/model/first_try.h5')
+
         # Give feedback to user of camera initialization and warm up.
         GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.HIGH)
 
@@ -62,12 +65,12 @@ class AppConfig:
     def __del__(self):
         self._cleanup_gpio()
 
-    def run(self, app):
+    def run(self):
         if proximity_sensor.is_there_object_near():
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.HIGH)
             filename = 'photo_' + str(int(time())) + '.jpg'
             self.camera.capture(filename)
-            class_output = app.classify(filename)
+            class_output = self.predict(filename)
             print(class_output)
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.LOW)
             if class_output == 'recyclable':
@@ -75,57 +78,37 @@ class AppConfig:
                 sleep(1)
                 GPIO.output(self.pinout['LED_RECYCLABLE_OUTPUT_PIN'], GPIO.LOW)
 
-                app.store_file(filename, 'data-collection/recyclable/' + filename)
+                self.store_file(filename, 'data-collection/recyclable/' + filename)
             if class_output == 'nonrecyclable':
                 GPIO.output(self.pinout['LED_NON_RECYCLABLE_OUTPUT_PIN'], GPIO.HIGH)
                 sleep(1)
                 GPIO.output(self.pinout['LED_NON_RECYCLABLE_OUTPUT_PIN'], GPIO.LOW)
 
-                app.store_file(filename, 'data-collection/nonrecyclable/' + filename)
+                self.store_file(filename, 'data-collection/nonrecyclable/' + filename)
 
             sleep(.3)
 
-
-class OfflineApp:
-    def __init__(self):
-        super().__init__()
-        self.model = TrashModel()
-        self.model.load_weights('/home/pi/trashclassifier/model/first_try.h5')
-
-    def classify(self, filename):
-        return self.model.classifier(filename)
+    def predict(self, filename):
+        try:
+            with open(filename, 'rb') as f:
+                return requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'pic.jpg': f})
+        except Exception as e:
+            print(e)
+            return self.model.classifier(filename)
 
     def store_file(self, origin, dest):
-        os.rename(origin, dest)
+        try:
+            datastore.move_object(origin, dest)
 
-
-class OnlineApp:
-    def __init__(self):
-        super().__init__()
-
-    def classify(self, filename):
-        with open(filename, 'rb') as f:
-            return requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'pic.jpg': f})
-
-    def store_file(self, origin, dest):
-        datastore.move_object(origin, dest)
-
-
-def run(app, online_app, offline_app):
-
-    try:
-        app.run(online_app)
-
-    except:
-        app.run(offline_app)
+        except Exception as e:
+            print(e)
+            os.rename(origin, dest)
 
 
 if __name__ == '__main__':
 
     app = AppConfig()
-    online_app = OnlineApp()
-    offline_app = OfflineApp()
 
     while True:
-        run(app, online_app, offline_app)
+        app.run()
         sleep(.1)
