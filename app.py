@@ -27,7 +27,7 @@ def index():
         global graph
 
         with graph.as_default():
-            class_output = model.classifier('./photo.jpg')
+            class_output = model.classifier(filename)
             print(class_output)
             if class_output == 'recyclable':
                 os.rename(filename, DATASET_PATH + '/recyclable/' + filename)
