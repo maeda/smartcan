@@ -70,9 +70,8 @@ class AppConfig:
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.HIGH)
             filename = 'photo_' + str(int(time())) + '.jpg'
 
-            with self.camera as camera:
-                camera.resolution = (1024, 768)
-                camera.capture(filename)
+            self.camera.resolution = (1024, 768)
+            self.camera.capture(filename)
 
             class_output = self.predict(filename)
             print(class_output)
@@ -95,8 +94,7 @@ class AppConfig:
     def predict(self, filename):
         try:
             with open(filename, 'rb') as f:
-                response = requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'pic.jpg': f})
-                print(response.text)
+                response = requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'photo': f})
                 response.raise_for_status()
 
                 return response.text
