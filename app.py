@@ -5,6 +5,8 @@ import tensorflow as tf
 import time
 import os
 
+import datastore
+
 from model.image_model import TrashVggModel, TrashModel, SimpleModel
 
 
@@ -28,11 +30,17 @@ def index():
 
         with graph.as_default():
             class_output = model.classifier(filename)
+
             print(class_output)
+
             if class_output == 'recyclable':
-                os.rename(filename, DATASET_PATH + '/recyclable/' + filename)
+                datastore.put_object(filename, 'data-collection/recyclable/' + filename)
             if class_output == 'nonrecyclable':
-                os.rename(filename, DATASET_PATH + '/nonrecyclable/' + filename)
+                datastore.put_object(filename, 'data-collection/nonrecyclable/' + filename)
+
+            if os.path.exists(filename):
+                os.remove(filename)
+
             return class_output
     return ""
 
