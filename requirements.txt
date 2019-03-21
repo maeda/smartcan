@@ -1,6 +1,5 @@
 keras
 tensorflow
-jupyter
 h5py
 numpy
 flask
