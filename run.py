@@ -109,22 +109,22 @@ class OnlineApp:
 
 
 
-def run():
-    app = AppConfig()
+def run(app):
 
     online_app = OnlineApp()
-    # offline_app = OfflineApp()
+    offline_app = OfflineApp()
 
     try:
         app.run(online_app)
 
     except:
-        pass
-        # app.run(app_config, offline_app)
+        app.run(offline_app)
 
 
 if __name__ == '__main__':
 
+    app = AppConfig()
+
     while True:
-        run()
+        run(app)
         sleep(.1)
