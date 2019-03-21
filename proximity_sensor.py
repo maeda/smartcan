@@ -15,8 +15,6 @@ def is_there_object_near():
 
     GPIO.output(PIN_TRIGGER, False)
 
-    print("Waiting for sensor to settle")
-
     time.sleep(1)
 
     GPIO.output(PIN_TRIGGER, True)
@@ -32,6 +30,5 @@ def is_there_object_near():
 
     pulse_duration = pulse_end_time - pulse_start_time
     distance = round(pulse_duration * 17150, 2)
-    print("Distance:", distance, "cm")
 
     return distance < 15.0
