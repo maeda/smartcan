@@ -91,7 +91,10 @@ class AppConfig:
     def predict(self, filename):
         try:
             with open(filename, 'rb') as f:
-                return requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'pic.jpg': f})
+                response = requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'pic.jpg': f})
+                print(response.text)
+                response.raise_for_status()
+
         except Exception as e:
             print(e)
             return self.model.classifier(filename)
