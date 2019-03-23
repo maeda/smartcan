@@ -51,7 +51,7 @@ class AppConfig:
 
         from picamera import PiCamera
 
-        self.camera = PiCamera()
+        self.camera = PiCamera(resolution=(1024, 768))
         sleep(2)
 
         print('Camera ready!')
@@ -67,7 +67,7 @@ class AppConfig:
             GPIO.output(self.pinout['LED_CTRL_OUTPUT_PIN'], GPIO.HIGH)
             filename = 'photo_' + str(int(time())) + '.jpg'
 
-            self.camera.resolution = (1024, 768)
+            self.camera.iso = 300
             self.camera.capture(filename)
 
             class_output = self.predict(filename)
