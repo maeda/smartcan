@@ -1,20 +1,26 @@
-from flask import Flask
-from flask import request
+import threading
+
+from flask import Flask, request
 
 import tensorflow as tf
 import time
 import os
 
-import datastore
+from datastore import move_object
 
 from model.image_model import TrashVggModel, TrashModel, SimpleModel
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 graph = tf.get_default_graph()
 
 app = Flask(__name__)
 
-model = TrashModel()
+model = SimpleModel()
+
+model.load_weights('./model/simple_model_weights.h5')
 
 DATASET_PATH = os.environ.get('DATASET_PATH', './data-collection')
 
@@ -22,24 +28,26 @@ DATASET_PATH = os.environ.get('DATASET_PATH', './data-collection')
 @app.route('/image', methods=['POST'])
 def index():
     if request.method == 'POST':
-        filename = 'photo_' + str(int(time.time())) + '.jpg'
+        filename = 'photo_{}.jpg'.format(str(int(time.time())))
         f = request.files['photo']
         f.save(filename)
 
         global graph
 
         with graph.as_default():
+
             class_output = model.classifier(filename)
+            app.logger.info("Class predicted: {}.".format(class_output))
 
-            print(class_output)
-
-            if class_output == 'recyclable':
-                datastore.move_object(filename, 'data-collection/recyclable/' + filename)
-            if class_output == 'nonrecyclable':
-                datastore.move_object(filename, 'data-collection/nonrecyclable/' + filename)
+            threading.Thread(target=_upload_file, args=(filename, class_output)).start()
 
             return class_output
-    return ""
+
+
+def _upload_file(filename, class_output):
+    target = 'data-collection/{}_{}'.format(class_output, filename)
+    move_object(filename, target)
+    app.logger.info('File moved to {}'.format(target))
 
 
 if __name__ == '__main__':
