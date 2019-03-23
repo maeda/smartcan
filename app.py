@@ -45,7 +45,7 @@ def index():
 
 
 def _upload_file(filename, class_output):
-    target = 'data-collection/{}_{}'.format(class_output, filename)
+    target = 'data-collection/{}_{}_{}'.format(str(int(time.time())), class_output, filename)
     move_object(filename, target)
     app.logger.info('File moved to {}'.format(target))
 
