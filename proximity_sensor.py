@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+import os
 
 
 GPIO.setmode(GPIO.BCM)
@@ -31,4 +32,4 @@ def is_there_object_near():
     pulse_duration = pulse_end_time - pulse_start_time
     distance = round(pulse_duration * 17150, 2)
 
-    return distance < 15.0
+    return distance < float(os.environ.get("DISTANCE", "15.0"))
