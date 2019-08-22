@@ -9,3 +9,5 @@ wheel
 boto3
 requests
 python-dotenv
+gpiozero
+python-daemon

@@ -6,13 +6,8 @@ import tensorflow as tf
 import time
 import os
 
-from datastore import move_object
-
-from model.image_model import TrashVggModel, TrashModel, SimpleModel
-
-from dotenv import load_dotenv
-
-load_dotenv()
+from storage.datastore import move_object
+from model.image_model import SimpleModel
 
 graph = tf.get_default_graph()
 

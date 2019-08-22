@@ -1,3 +1,5 @@
+from abc import ABC, abstractmethod
+
 import boto3
 import os
 import logging
@@ -5,7 +7,13 @@ import logging
 log = logging.getLogger('app.datastore')
 
 
-class RemoteDataStore:
+class DataStore(ABC):
+    @abstractmethod
+    def move_object(self, origin, destination):
+        pass
+
+
+class RemoteDataStore(DataStore):
 
     def __init__(self):
         log.info('Initializing remote datastore')
@@ -27,8 +35,9 @@ class RemoteDataStore:
         os.remove(origin)
 
 
-class LocalDataStore:
+class LocalDataStore(DataStore):
     def move_object(self, origin, destination):
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
         os.rename(origin, destination)
 
 
@@ -36,8 +45,11 @@ TARGETS = {RemoteDataStore.__name__: RemoteDataStore(),
            LocalDataStore.__name__: LocalDataStore()}
 
 
-def move_object(origin, destination):
-    target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
-    log.info("Moving object from %s to %s using service %s".format(origin, destination, target.__class__.__name__))
+class Storage(DataStore):
 
-    target.move_object(origin, destination)
+    def move_object(self, origin, destination):
+        target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
+        log.info("Moving object from %s to %s using service %s".format(origin, destination, target.__class__.__name__))
+
+        target.move_object(origin, destination)
+
