@@ -1,3 +1,4 @@
+import tempfile
 from abc import ABC, abstractmethod
 from time import sleep, time
 
@@ -25,6 +26,8 @@ class PiCameraDriver(CameraDriver):
         print('Camera ready!')
 
     def capture(self) -> Photo:
-        filename = 'photo_' + str(int(time())) + '.jpg'
-        self._camera.capture(filename)
-        return Photo(filename, resolution=self.resolution, iso=self.iso)
+        origin = tempfile.NamedTemporaryFile(mode="w+t", delete=False, suffix='.jpg')
+
+        self._camera.capture(origin)
+
+        return Photo(origin.name, resolution=self.resolution, iso=self.iso)

@@ -30,7 +30,7 @@ class RestPrediction(Prediction):
 
     def predict(self, photo: Photo) -> TrashClassified:
         try:
-            with open(photo.filename, 'rb') as f:
+            with open(photo.source, 'rb') as f:
                 response = requests.post(os.environ.get('SERVICE_ENDPOINT'), files={'photo': f})
                 response.raise_for_status()
 
@@ -47,4 +47,4 @@ class LocalPrediction(Prediction):
         self._model.load_weights(os.environ.get("MODEL_FILE"))
 
     def predict(self, photo: Photo) -> TrashClassified:
-        return TrashClassified(self._model.classifier(photo.filename), photo)
+        return TrashClassified(self._model.classifier(photo.source), photo)

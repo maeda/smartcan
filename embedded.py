@@ -39,11 +39,11 @@ class EmbeddedRuntime:
         class_output = self._prediction.predict(photo)
         if class_output.label == 'recyclable':
             self._presentation.recyclable()
-            self._storage.move_object(photo.filename, 'data-collection/recyclable/' + photo.filename)
+            self._storage.move_object(photo.source, 'data-collection/recyclable/' + photo.source)
 
         if class_output.label == 'nonrecyclable':
             self._presentation.non_recyclable()
-            self._storage.move_object(photo.filename, 'data-collection/nonrecyclable/' + photo.filename)
+            self._storage.move_object(photo.source, 'data-collection/nonrecyclable/' + photo.source)
 
         return class_output
 

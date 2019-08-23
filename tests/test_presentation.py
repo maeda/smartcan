@@ -7,11 +7,8 @@ from tests import factory
 class LedPanelTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.led_panel = LedPanel()
-
-    @classmethod
-    def tearDownClass(cls) -> None:
         factory.reset()
+        self.led_panel = LedPanel()
 
     def test_control_led(self):
         led_pin = factory.pin(CONTROL_LED_PIN)
