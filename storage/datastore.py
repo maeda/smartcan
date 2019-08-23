@@ -69,15 +69,15 @@ TARGETS = {RemoteDataStore.__name__: RemoteDataStore(),
 class Storage(DataStore):
 
     def delete_object(self, origin):
-        target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
+        target = TARGETS[os.environ.get('DATASTORE_TARGET', LocalDataStore.__name__)]
         target.delete_object(origin)
 
     def put_object(self, origin, destination):
-        target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
+        target = TARGETS[os.environ.get('DATASTORE_TARGET', LocalDataStore.__name__)]
         target.put_object(origin, destination)
 
     def move_object(self, origin, destination):
-        target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
+        target = TARGETS[os.environ.get('DATASTORE_TARGET', LocalDataStore.__name__)]
         log.info("Moving object from %s to %s using service %s".format(origin, destination, target.__class__.__name__))
 
         target.move_object(origin, destination)
