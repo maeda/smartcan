@@ -21,3 +21,5 @@ startup-add:
 startup-remove:
 	sudo update-rc.d -f smartcan remove
 	sudo rm -f /etc/init.d/smartcan
+
+install: build-pi startup-add
