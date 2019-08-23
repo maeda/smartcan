@@ -15,7 +15,7 @@ class Photo:
         self.resolution = resolution
         self.iso = iso
 
-    def resize(self, ratio, quality: int = 8):
+    def resize(self, ratio, quality: int = 80):
         image = Image.open(self.source)
         new_resolution = Resolution(int(self.resolution.width * ratio), int(self.resolution.height * ratio))
         image_resized = image.resize(new_resolution, Image.ANTIALIAS)

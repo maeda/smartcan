@@ -6,8 +6,8 @@ import tensorflow as tf
 import time
 import os
 
-from storage.datastore import move_object
 from model.image_model import SimpleModel
+from storage.datastore import RemoteDataStore, LocalDataStore
 
 graph = tf.get_default_graph()
 
@@ -41,7 +41,12 @@ def index():
 
 def _upload_file(filename, class_output):
     target = 'data-collection/{}_{}_{}'.format(str(int(time.time())), class_output, filename)
-    move_object(filename, target)
+    storage_remote = RemoteDataStore()
+    storage_local = LocalDataStore()
+
+    storage_remote.put_object(filename, target)
+    storage_local.delete_object(filename)
+
     app.logger.info('File moved to {}'.format(target))
 
 
