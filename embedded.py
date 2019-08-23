@@ -1,7 +1,9 @@
 import logging
+from time import time
 
 from dotenv import load_dotenv
 
+from hardware.camera import Photo
 from hardware.camera.drivers import CameraDriver, PiCameraDriver
 from hardware.trash_detector import TrashDetector
 from prediction.prediction import Prediction, LocalPrediction
@@ -39,11 +41,11 @@ class EmbeddedRuntime:
         class_output = self._prediction.predict(photo)
         if class_output.label == 'recyclable':
             self._presentation.recyclable()
-            self._storage.move_object(photo.source, 'data-collection/recyclable/' + photo.source)
+            self._storage.move_object(photo.source, 'data-collection/recyclable/' + 'photo_' + str(int(time())) + '.jpg')
 
         if class_output.label == 'nonrecyclable':
             self._presentation.non_recyclable()
-            self._storage.move_object(photo.source, 'data-collection/nonrecyclable/' + photo.source)
+            self._storage.move_object(photo.source, 'data-collection/nonrecyclable/' + 'photo_' + str(int(time())) + '.jpg')
 
         return class_output
 

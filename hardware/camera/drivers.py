@@ -28,6 +28,6 @@ class PiCameraDriver(CameraDriver):
     def capture(self) -> Photo:
         origin = tempfile.NamedTemporaryFile(mode="w+t", delete=False, suffix='.jpg')
 
-        self._camera.capture(origin)
+        self._camera.capture(origin.name)
 
         return Photo(origin.name, resolution=self.resolution, iso=self.iso)

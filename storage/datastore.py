@@ -14,7 +14,7 @@ class DataStore(ABC):
         pass
 
     @abstractmethod
-    def put_object(self, stream, destination):
+    def put_object(self, origin, destination):
         pass
 
     @abstractmethod
@@ -35,12 +35,12 @@ class RemoteDataStore(DataStore):
                                      aws_secret_access_key=os.environ.get('DATASTORE_SECRET'))
         self.bucket_name = os.environ.get('BUCKET_NAME')
 
-    def put_object(self, stream, destination):
-        self.client.put_object(Bucket=self.bucket_name, Key=destination, Body=stream)
+    def put_object(self, origin, destination):
+        with open(origin, 'rb') as f:
+            self.client.put_object(Bucket=self.bucket_name, Key=destination, Body=f)
 
     def move_object(self, origin, destination):
-        with open(origin, 'rb') as f:
-            self.put_object(f, destination)
+        self.client.copy_object(Bucket=self.bucket_name, CopySource=origin, Key=destination)
         self.delete_object(origin)
 
     def delete_object(self, origin):
@@ -49,9 +49,9 @@ class RemoteDataStore(DataStore):
 
 class LocalDataStore(DataStore):
 
-    def put_object(self, stream, destination):
+    def put_object(self, origin, destination):
         with open(destination, 'wb') as f:
-            f.write(stream.read())
+            f.write(origin.read())
 
     def move_object(self, origin, destination):
         os.makedirs(os.path.dirname(destination), exist_ok=True)
@@ -66,6 +66,14 @@ TARGETS = {RemoteDataStore.__name__: RemoteDataStore(),
 
 
 class Storage(DataStore):
+
+    def delete_object(self, origin):
+        target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
+        target.delete_object(origin)
+
+    def put_object(self, origin, destination):
+        target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
+        target.put_object(origin, destination)
 
     def move_object(self, origin, destination):
         target = TARGETS[os.environ.get('DATASTORE_TARGET', RemoteDataStore.__name__)]
