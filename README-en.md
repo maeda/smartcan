@@ -2,10 +2,6 @@
 
 Para descrição em português, clique [aqui](README.md).
 
-A Lixeira Inteligente é um projeto de código e hardware abertos para ajudar na conscientização 
-sobre o descarte de resíduos através do reconhecimento de imagens e classificação
-automática utilizando sensores e algoritmos de aprendizado de máquina.
-
 Smartcan is a open hardware and source code for helping about awareness of waste 
 disposal throughout image recognition and automatic classification 
 using sensors and machine learning algorithms. 
