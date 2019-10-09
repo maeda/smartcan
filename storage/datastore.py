@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 from abc import ABC, abstractmethod
+from botocore.exceptions import EndpointConnectionError
 
 import boto3
 import os
@@ -37,8 +38,14 @@ class RemoteDataStore(DataStore):
         self.bucket_name = os.environ.get('BUCKET_NAME')
 
     def put_object(self, origin, destination):
+        # TODO: define a strategy after connection recovery
         with open(origin, 'rb') as f:
-            self.client.put_object(Bucket=self.bucket_name, Key=destination, Body=f)
+            try:
+                self.client.put_object(Bucket=self.bucket_name, Key=destination, Body=f)
+            except EndpointConnectionError as e:
+                log.error(e)
+                local_storage = LocalDataStore()
+                local_storage.put_object(f, destination)
 
     def move_object(self, origin, destination):
         self.client.copy_object(Bucket=self.bucket_name, CopySource=origin, Key=destination)
